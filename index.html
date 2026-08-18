@@ -434,7 +434,8 @@ function renderDailySummary(){
  var html="<div class='box score'><div><small>OVERALL DAILY CONSISTENCY</small><strong>"+overall+"%</strong><div style='font-weight:bold;color:#1d7b50'>"+status+"</div></div><div class='ring'>"+overall+"%</div></div>";
  html+="<div class='box'><b style='color:#0757b8'>8 Action — Rata-rata</b><table style='margin-top:8px'><tr><th>Action</th><th>Nilai</th><th>Status</th></tr>";
  for(var k=0;k<actionRows.length;k++){
-   var st=actionRows[k].score>=70?"Konsisten":(actionRows[k].score>0?"Tidak konsisten":"Tidak dilakukan");
+   var sc=actionRows[k].score;
+var st=sc===0?"Tidak dilakukan":(sc>=85?"Sangat konsisten":(sc>=70?"Konsisten":"Belum konsisten"));
    html+="<tr><td>"+actionRows[k].action+"</td><td><b>"+actionRows[k].score+"%</b></td><td>"+st+"</td></tr>";
  }
  html+="</table></div>";
@@ -457,8 +458,8 @@ function renderReports(){
  for(var j=d.length-1;j>=0;j--){var p=d[j].staff.split("|");html+="<tr><td>"+d[j].date+"</td><td>"+p[0]+"</td><td>"+d[j].target+"</td><td>"+d[j].overall+"%</td></tr>";}
  html+="</table></div>";
  byId("reportsBox").innerHTML=html;
-}
-
+} 
+  
 function renderCompare(){
  var d=getData(), map={};
  for(var i=0;i<d.length;i++){
