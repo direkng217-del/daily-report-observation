@@ -501,7 +501,7 @@ function renderReport(){
 for(var a=0;a<actions.length;a++){
  var s=0;
  for(var b=0;b<rows.length;b++){for(var c=0;c<rows[b].scores.length;c++){if(rows[b].scores[c].action===actions[a])s+=rows[b].scores[c].score;}}
- var av=Math.round(s/rows.length),st=av>=70?"Konsisten":(avg===100?dilakukan":avg>0"belum konsisten":"Tidak dilakukan");
+ var av=Math.round(s/rows.length),st=av>=70?"Konsisten":(avg===100?"dilakukan":avg>0?"belum konsisten":"Tidak dilakukan");
  html+="<tr><td>"+actions[a]+"</td><td>"+av+"%</td><td>"+st+"</td></tr>";
 }
 html+="</table><p><b>Kesimpulan keseluruhan:</b> Penerapan 8 Action oleh "+p[1]+" dari "+rows.length+" sampel memiliki konsistensi rata-rata "+avg+"%. Gunakan Action dengan hasil terendah sebagai prioritas coaching.</p>";
