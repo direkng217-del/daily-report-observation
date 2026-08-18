@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0757b8">
+<title>Daily Report Observation</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef6ff;color:#163b62;font-family:Arial,sans-serif}
+.app{max-width:520px;margin:auto;min-height:100vh;background:#f8fbff}
+header{background:#fff;padding:16px 18px;border-bottom:1px solid #d9e6f3;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;color:#0757b8;font-size:18px}.by{font-size:12px;color:#5880a5;font-style:italic;margin-top:3px}
+main{padding:14px 14px 90px}.page{display:none}.page.active{display:block}
+.hero{background:linear-gradient(135deg,#0757b8,#4b9ae8);border-radius:25px;padding:22px;min-height:245px;color:white;position:relative;overflow:hidden}
+.hero h1{font-size:31px;line-height:1.05;margin:0;width:58%}.hero p{width:58%;line-height:1.45;color:#edf7ff}.creates{font-style:italic;color:#ffe36b;font-weight:bold}
+.cards{position:absolute;right:15px;bottom:18px;display:flex;gap:7px}
+.person{width:82px;height:112px;border-radius:15px;position:relative;box-shadow:0 12px 22px #002b5b55;padding:9px;font-weight:bold;color:white;transform:rotate(5deg)}
+.person.female{background:#f5c900;transform:rotate(-7deg);color:#173b62}.person.male{background:#1267c5}
+.face{position:absolute;top:36px;left:20px;width:42px;height:42px;background:#f0bc8d;border-radius:50%;border:3px solid white}
+.hair{position:absolute;top:29px;left:22px;width:38px;height:16px;background:#262626;border-radius:18px 18px 5px 5px;z-index:2}
+.glass1,.glass2{position:absolute;top:48px;width:17px;height:11px;border:2px solid #183957;border-radius:4px;z-index:3}.glass1{left:18px}.glass2{left:40px}.bridge{position:absolute;top:52px;left:35px;width:7px;border-top:2px solid #183957;z-index:3}
+.tie{position:absolute;top:77px;left:37px;width:9px;height:26px;background:#063b7b;clip-path:polygon(35% 0,65% 0,100% 25%,65% 100%,35% 100%,0 25%)}
+.menugrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.menu{border:0;background:white;border-radius:19px;padding:17px;text-align:left;min-height:115px;box-shadow:0 7px 20px #0b4f8b12}
+.menu .icon{font-size:28px;margin-bottom:12px}.menu b{display:block;color:#173f69;font-size:14px}.menu span{display:block;color:#71879d;font-size:12px;line-height:1.35;margin-top:5px}
+.back{border:0;background:none;color:#0757b8;font-weight:bold;padding:5px 0 12px;font-size:14px}
+h2{color:#063b7b}
+.box{background:#fff;border:1px solid #d9e6f3;border-radius:18px;padding:16px;margin-bottom:13px;box-shadow:0 6px 18px #0b4f8b0b}
+label{display:block;font-size:12px;font-weight:bold;color:#466884;margin-bottom:12px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #c9d9e8;border-radius:11px;margin-top:6px;background:white;color:#163b62}
+.targetgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.target{border:1px solid #d4e2ef;background:#f7fbff;border-radius:10px;padding:9px 3px;font-size:11px}.target.selected{background:#e4f1ff;border:2px solid #0757b8;color:#0757b8;font-weight:bold}
+.catgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.cat{border:1px solid #d4e2ef;background:white;border-radius:10px;padding:10px 3px;font-size:11px}.cat.selected{background:#e4f1ff;border:2px solid #0757b8;color:#0757b8;font-weight:bold}
+.voice{text-align:center;background:linear-gradient(135deg,#eaf5ff,#fff)}.mic{width:76px;height:76px;background:#0757b8;color:#fff;border-radius:50%;display:grid;place-items:center;font-size:32px;margin:auto auto 10px}.recording .mic{background:#d74747}
+button.primary{width:100%;background:#0757b8;color:#fff;border:0;border-radius:12px;padding:13px;font-weight:bold}button.secondary{width:100%;background:#e8f1fa;color:#0757b8;border:0;border-radius:12px;padding:13px;font-weight:bold}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.progress{height:8px;background:#e5edf5;border-radius:8px;overflow:hidden}.progress i{display:block;height:100%;background:#0757b8;width:0}
+.action{background:#fff;border:1px solid #d9e6f3;border-radius:15px;padding:13px;margin-bottom:9px}.actionhead{display:flex;justify-content:space-between;gap:8px}.badge{font-size:10px;font-weight:bold;border-radius:20px;padding:6px 8px}.good{background:#dcf6e8;color:#167648}.warn{background:#fff0ca;color:#936000}.bad{background:#ffe0e0;color:#a72d2d}
+.score{display:flex;justify-content:space-between;align-items:center}.score strong{display:block;font-size:40px;color:#0757b8}.ring{width:90px;height:90px;border-radius:50%;border:9px solid #25a46a;display:grid;place-items:center;color:#0757b8;font-weight:bold}
+table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:9px 4px;border-bottom:1px solid #e2ebf3}th{color:#0757b8}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);height:64px;background:#fff;border-top:1px solid #d9e6f3;display:flex;justify-content:space-around;z-index:10}.bottom button{border:0;background:none;color:#52718e;font-size:18px}.bottom small{display:block;font-size:9px;margin-top:3px}
+@media print{header,.bottom,.back,button{display:none!important}.page{display:none!important}.page.active{display:block!important}.app{max-width:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">DAILY REPORT OBSERVATION</div><div class="by">creates by dee</div></header>
+<main>
+
+<section id="home" class="page active">
+<div class="hero">
+<div class="creates">creates by dee</div>
+<h1>Daily Report Observation</h1>
+<p>Observasi layanan harian dengan bantuan AI.</p>
+<div class="cards">
+<div class="person female"><b>BCA</b><div class="hair"></div><div class="face"></div></div>
+<div class="person male"><b>BCA</b><div class="hair"></div><div class="face"></div><div class="glass1"></div><div class="glass2"></div><div class="bridge"></div><div class="tie"></div></div>
+</div>
+</div>
+<div class="menugrid">
+<button class="menu" onclick="show('observe')"><div class="icon">📝</div><b>Mulai Observasi</b><span>Catat layanan harian</span></button>
+<button class="menu" onclick="show('people')"><div class="icon">👤</div><b>Data Petugas</b><span>Nama & User ID</span></button>
+<button class="menu" onclick="show('reports')"><div class="icon">📊</div><b>Rekap & Analisis</b><span>Hasil observasi</span></button>
+<button class="menu" onclick="show('compare')"><div class="icon">👥</div><b>Perbandingan User ID</b><span>Bandingkan konsistensi</span></button>
+<button class="menu" onclick="show('report')"><div class="icon">📄</div><b>Laporan Per Nama</b><span>Siap dicetak</span></button>
+<button class="menu" onclick="show('master')"><div class="icon">🧠</div><b>Master Standard</b><span>Standar penilaian AI</span></button><button class="menu" onclick="show('ai')"><div class="icon">🤖</div><b>AI Assessment</b><span>Mesin penilaian</span></button><button class="menu" onclick="show('daily')"><div class="icon">📈</div><b>Kesimpulan Harian</b><span>Analisis 1–15 nasabah</span></button>
+<button class="menu" onclick="show('referral')"><div class="icon">🎯</div><b>Referral Program</b><span>Kelola referral</span></button>
+</div>
+<div class="box"><small>OBSERVASI HARI INI</small><div id="homeCount" style="font-size:22px;font-weight:bold;color:#0757b8;margin-top:4px">0 nasabah</div></div>
+</section>
+
+<section id="observe" class="page">
+<button class="back" onclick="show('home')">← Kembali</button><h2>Mulai Observasi</h2>
+<div class="box">
+<label>Petugas / User ID<select id="staff"><option value="ANDI001|Andi">ANDI001 — Andi</option><option value="BUDI002|Budi">BUDI002 — Budi</option></select></label>
+<label>Tanggal<input id="date" type="date"></label>
+<label>Target Observasi</label><div id="targets" class="targetgrid"></div>
+<label style="margin-top:14px">Kategori Nasabah</label><div id="cats" class="catgrid">
+<button class="cat selected" data-cat="Nasabah Dikenal">Dikenal</button><button class="cat" data-cat="Nasabah Tidak Dikenal">Tidak Dikenal</button><button class="cat" data-cat="Nasabah WIC">WIC</button>
+</div>
+</div>
+<div class="box voice"><div class="mic">🎙️</div><b id="voiceTitle">Voice Observation</b><p id="voiceStatus">Tekan mikrofon lalu ceritakan hasil pengamatan.</p><button id="recordBtn" class="primary">Mulai Rekam</button></div>
+<div class="box"><label>Catatan / hasil transkripsi<textarea id="notes" rows="6" placeholder="Hasil transkripsi akan muncul di sini..."></textarea></label><div class="row"><button class="secondary" onclick="document.getElementById('notes').value=''">Bersihkan</button><button class="primary" onclick="analyze()">Analisis</button></div></div>
+<div class="box"><b>Target hari ini</b><div style="display:flex;justify-content:space-between;margin:9px 0;font-size:12px"><span id="sampleText">0 / 15</span><span id="lastText">Belum ada</span></div><div class="progress"><i id="sampleProgress"></i></div></div>
+</section>
+
+<section id="sample" class="page">
+<button class="back" onclick="show('observe')">← Kembali</button><h2>Hasil 1 Sampel</h2>
+<div id="sampleHead" class="box"></div><div id="sampleActions"></div>
+<div class="box"><b style="color:#0757b8">Kesimpulan Sampel</b><p id="sampleConclusion"></p></div>
+<button class="primary" onclick="saveCurrent()">✓ Simpan Sampel</button><div style="height:8px"></div><button class="secondary" onclick="show('ai');assessWithServer()">🤖 Analisis AI Server</button>
+</section>
+
+
+<section id="ai" class="page">
+<button class="back" onclick="show('home')">← Kembali</button>
+<h2>AI Assessment</h2><div id="aiConnection" class="box" style="background:#fff7df;color:#805f00"><b>Mode:</b> AI lokal / belum terhubung server</div><div id="dbConnection" class="box" style="background:#eef7ff;color:#24547f"><b>Database:</b> Belum dikonfigurasi</div>
+<div class="box" style="background:#eef7ff">
+<b style="color:#0757b8">Cara kerja penilaian</b>
+<p style="font-size:12px;line-height:1.55;margin-bottom:0">
+AI membaca hasil Voice Observation, kemudian membandingkan bukti yang ditemukan dengan indikator pada Master Standard. Setiap indikator diberi status <b>dilakukan</b>, <b>sebagian</b>, atau <b>belum ditemukan</b>.
+</p>
+</div>
+<div class="box"><button class="primary" onclick="assessWithServer()">🤖 Nilai dengan AI Server</button></div><div id="aiBox"></div>
+</section>
+
+
+<section id="daily" class="page">
+<button class="back" onclick="show('home')">← Kembali</button>
+<h2>Kesimpulan Harian</h2>
+<div class="box">
+<label>Petugas / User ID
+<select id="dailyUser" onchange="renderDailySummary()"></select>
+</label>
+<div id="dailyMeta"></div>
+</div>
+<div id="dailySummary"></div>
+</section>
+
+<section id="reports" class="page"><button class="back" onclick="show('home')">← Kembali</button><h2>Rekap & Analisis</h2><div id="reportsBox"></div></section>
+<section id="compare" class="page"><button class="back" onclick="show('home')">← Kembali</button><h2>Perbandingan User ID</h2><div id="compareBox"></div></section>
+<section id="report" class="page"><button class="back" onclick="show('home')">← Kembali</button><h2>Laporan Per Nama</h2><div class="box"><label>Pilih User ID<select id="reportUser" onchange="renderReport()"></select></label></div><div id="reportBox" class="box"></div><button class="primary" onclick="window.print()">🖨️ Cetak / Simpan PDF</button></section>
+<section id="people" class="page"><button class="back" onclick="show('home')">← Kembali</button><h2>Data Petugas</h2><div class="box"><b>ANDI001 — Andi</b><hr><b>BUDI002 — Budi</b><p style="font-size:12px;color:#71879d">Versi berikutnya dapat ditambah login dan pengelolaan User ID.</p></div></section>
+<section id="master" class="page"><button class="back" onclick="show('home')">← Kembali</button><h2>Master Standard</h2><div id="masterBox"></div></section>
+<section id="referral" class="page"><button class="back" onclick="show('home')">← Kembali</button><h2>Referral Program</h2><div class="box"><label>Petugas<select><option>ANDI001 — Andi</option><option>BUDI002 — Budi</option></select></label><label>Produk</label><div class="row"><label><input type="checkbox"> KKB</label><label><input type="checkbox"> KPR</label></div><div class="row"><label><input type="checkbox"> KSM</label><label><input type="checkbox"> KUR</label></div><div class="row"><label><input type="checkbox"> AIA</label><label><input type="checkbox"> BCA Life</label></div><label>Status<select><option>Telling</option><option>Referral</option><option>Follow Up</option></select></label><label>Keterangan<textarea rows="4"></textarea></label><button class="primary">Simpan Referral</button></div></section>
+
+</main>
+<nav class="bottom">
+<button onclick="show('home')">⌂<small>Home</small></button>
+<button onclick="show('observe')">☑<small>Observasi</small></button>
+<button onclick="show('reports')">▥<small>Rekap</small></button>
+<button onclick="show('report')">▤<small>Laporan</small></button>
+<button onclick="show('people')">♙<small>Akun</small></button>
+</nav>
+</div>
+
+<script>
+var actions=["Greeting","Socialization","Education","Telling","Satisfaction","Appreciation","Checking","Report & Follow Up"];
+
+var master={
+"Greeting":["Senyum, sapa, salam","Memperkenalkan diri dan sebut nama","Menanyakan nama nasabah","Jika sudah dikenal, sebut nama nasabah","Menanyakan kebutuhan nasabah","Sigap, antusias, ramah dan berpenampilan menarik"],
+"Socialization":["Informasikan survey Hallo BCA untuk BSQ","Informasikan survey Gallup untuk CE kepada nasabah K1"],
+"Education":["Edukasi VOC BSQ melalui barcode atau kertas","Edukasi VOC CE melalui barcode atau kertas","Informasikan range 1 sampai 5 dan nilai terbaik adalah 5","Informasikan aplikasi atau mesin digital baru dan kegunaannya"],
+"Telling":["Tawarkan KKB, KPR, KSM, KUR, AIA, BCA Life","Masukkan telling ke Laporan Referral"],
+"Satisfaction":["Proses transaksi dengan cepat","Melayani dengan fokus","Konfirmasi dan cek ulang dengan teliti","Memberikan penjelasan lengkap","Telling solusi dengan tuntas"],
+"Appreciation":["Menawarkan bantuan lain","Mengucapkan terima kasih","Menyampaikan magic word"],
+"Checking":["Pengecekan nasabah K1 untuk edukasi VOC CE"],
+"Report & Follow Up":["Input penawaran solusi di TXN 261 pada IBS, BDSWeb, Selvi, Monica"]
+};
+
+var words={
+"Greeting":["senyum","sapa","salam","perkenalkan","nama","kebutuhan","sigap","antusias","ramah"],
+"Socialization":["hallo bca","bsq","gallup","ce","survey"],
+"Education":["voc","barcode","kertas","range","5","digital","mesin"],
+"Telling":["kkb","kpr","ksm","kur","aia","bca life","referral"],
+"Satisfaction":["cepat","fokus","konfirmasi","cek ulang","teliti","penjelasan","solusi"],
+"Appreciation":["bantuan lain","terima kasih","magic word"],
+"Checking":["k1","cek nasabah"],
+"Report & Follow Up":["txn 261","ibs","bdsweb","selvi","monica","input","follow up"]
+};
+
+var target="Nasabah ke-1";
+var category="Nasabah Dikenal";
+var current=null;
+var recognition=null;
+var recording=false;
+
+function byId(id){return document.getElementById(id);}
+function show(id){
+ var pages=document.querySelectorAll(".page");
+ for(var i=0;i<pages.length;i++){pages[i].classList.remove("active");}
+ byId(id).classList.add("active");
+ if(id==="master"){renderMaster();} if(id==="ai"){renderAI();} if(id==="daily"){setupDaily();}
+ if(id==="reports"){renderReports();}
+ if(id==="compare"){renderCompare();}
+ if(id==="report"){setupReport();}
+ if(id==="observe"){updateProgress();}
+ window.scrollTo(0,0);
+}
+
+function init(){
+ var now=new Date();
+ byId("date").value=now.toISOString().slice(0,10);
+ var targetBox=byId("targets");
+ for(var i=1;i<=15;i++){
+   var b=document.createElement("button");
+   b.className="target"+(i===1?" selected":"");
+   b.innerHTML="Nasabah<br><b>"+i+"</b>";
+   b.setAttribute("data-target","Nasabah ke-"+i);
+   b.onclick=function(){
+     var all=document.querySelectorAll(".target");
+     for(var j=0;j<all.length;j++){all[j].classList.remove("selected");}
+     this.classList.add("selected");
+     target=this.getAttribute("data-target");
+   };
+   targetBox.appendChild(b);
+ }
+ var cats=document.querySelectorAll(".cat");
+ for(var k=0;k<cats.length;k++){
+   cats[k].onclick=function(){
+     for(var j=0;j<cats.length;j++){cats[j].classList.remove("selected");}
+     this.classList.add("selected");
+     category=this.getAttribute("data-cat");
+   };
+ }
+ updateProgress();
+}
+
+function getData(){
+ try{return JSON.parse(localStorage.getItem("dro_v6")||"[]");}
+ catch(e){return [];}
+}
+
+function updateProgress(){
+ var d=getData();
+ var date=byId("date").value;
+ var staff=byId("staff").value;
+ var n=0;
+ for(var i=0;i<d.length;i++){if(d[i].date===date && d[i].staff===staff){n++;}}
+ byId("sampleText").textContent=n+" / 15";
+ byId("lastText").textContent=n?"Sampel ke-"+n:"Belum ada";
+ byId("sampleProgress").style.width=Math.min(100,n/15*100)+"%";
+ byId("homeCount").textContent=n+" nasabah";
+}
+
+byId("date").onchange=updateProgress;
+byId("staff").onchange=updateProgress;
+
+byId("recordBtn").onclick=function(){
+ if(recording){stopVoice();return;}
+ var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){byId("voiceStatus").textContent="Voice-to-text belum tersedia di browser ini. Gunakan Chrome atau ketik manual.";return;}
+ recognition=new SR();
+ recognition.lang="id-ID";
+ recognition.continuous=true;
+ recognition.interimResults=true;
+ recording=true;
+ document.body.classList.add("recording");
+ byId("recordBtn").textContent="⏹ Berhenti";
+ byId("voiceTitle").textContent="Sedang merekam";
+ byId("voiceStatus").textContent="Silakan ceritakan hasil pengamatan.";
+ var finalText="";
+ recognition.onresult=function(e){
+   var interim="";
+   for(var i=e.resultIndex;i<e.results.length;i++){
+     var t=e.results[i][0].transcript;
+     if(e.results[i].isFinal){finalText+=t+" ";}else{interim+=t;}
+   }
+   byId("notes").value=(finalText+interim).trim();
+ };
+ recognition.onerror=function(){stopVoice();};
+ recognition.onend=function(){if(recording){try{recognition.start();}catch(e){}}};
+ recognition.start();
+};
+
+function stopVoice(){
+ recording=false;
+ document.body.classList.remove("recording");
+ byId("recordBtn").textContent="Mulai Rekam";
+ byId("voiceTitle").textContent="Voice Observation";
+ byId("voiceStatus").textContent="Transkripsi siap diperiksa.";
+ if(recognition){recognition.onend=null;try{recognition.stop();}catch(e){}}
+}
+
+function normalizeText(s){
+ return (s||"").toLowerCase().replace(/[.,!?;:()[\]{}]/g," ");
+}
+function indicatorEvidence(indicator, text){
+ var t=normalizeText(text);
+ var phrases=indicator.toLowerCase().split(/[,/]| dan /).map(function(x){return x.trim();}).filter(Boolean);
+ var hit=0;
+ for(var i=0;i<phrases.length;i++){
+   if(phrases[i] && t.indexOf(phrases[i])>=0) hit++;
+ }
+ if(hit>0) return hit>=Math.max(1,Math.ceil(phrases.length/2))?100:50;
+ return 0;
+}
+function aiAnalyzeAction(action,text){
+ var list=master[action], total=0, details=[];
+ for(var i=0;i<list.length;i++){
+   var ev=indicatorEvidence(list[i],text);
+   total+=ev;
+   details.push({indicator:list[i],evidence:ev,status:ev===100?"Dilakukan":ev===50?"Sebagian":"Belum ditemukan"});
+ }
+ var score=list.length?Math.round(total/list.length):0;
+ var status=score>=70?"Konsisten dilakukan":score>0?"Tidak konsisten dilakukan":"Tidak dilakukan";
+ return {action:action,score:score,status:status,details:details};
+}
+function analyze(){
+ var text=byId("notes").value;
+ if(!text.trim()){alert("Isi hasil observasi atau gunakan Voice Observation terlebih dahulu.");return;}
+ var scores=[];
+ for(var i=0;i<actions.length;i++){scores.push(aiAnalyzeAction(actions[i],text));}
+ var total=0;
+ for(var j=0;j<scores.length;j++){total+=scores[j].score;}
+ current={
+   staff:byId("staff").value,
+   date:byId("date").value,
+   target:target,
+   category:category,
+   notes:text,
+   scores:scores,
+   overall:Math.round(total/8)
+ };
+ renderSample();
+ show("sample");
+}
+function renderSample(){
+ var r=current, parts=r.staff.split("|");
+ byId("sampleHead").innerHTML="<b>"+r.target+"</b><br><small>"+r.category+" · "+r.date+" · "+parts[0]+" — "+parts[1]+"</small><div style='margin-top:10px;font-size:28px;font-weight:bold;color:#0757b8'>"+r.overall+"%</div><small>Overall penerapan 8 Action</small>";
+ var box=byId("sampleActions");box.innerHTML="";
+ for(var i=0;i<r.scores.length;i++){
+   var x=r.scores[i], cls=x.score>=70?"good":(x.score>0?"warn":"bad");
+   var details="";
+   for(var j=0;j<x.details.length;j++){
+     var d=x.details[j];
+     var c=d.evidence===100?"good":(d.evidence===50?"warn":"bad");
+     details+="<div style='margin-top:7px;padding:8px;background:#f7fbff;border-radius:9px;font-size:11px'><span class='badge "+c+"'>"+d.status+"</span> "+d.indicator+"</div>";
+   }
+   box.innerHTML+="<div class='action'><div class='actionhead'><b>"+x.action+"</b><span class='badge "+cls+"'>"+x.status+" · "+x.score+"%</span></div><div style='margin-top:8px'>"+details+"</div></div>";
+ }
+ var good=0,bad=[];
+ for(var k=0;k<r.scores.length;k++){if(r.scores[k].score>=70){good++;}else{bad.push(r.scores[k].action);}}
+ byId("sampleConclusion").textContent="Pada "+r.target+", "+good+" dari 8 Action teridentifikasi konsisten. "+(bad.length?"Prioritas improvement: "+bad.join(", ")+".":"Tidak ada prioritas improvement pada sampel ini.");
+}
+function saveCurrent(){
+ var d=getData();
+ d.push(current);
+ localStorage.setItem("dro_v6",JSON.stringify(d));
+ alert("Sampel berhasil disimpan.");
+ byId("notes").value="";
+ updateProgress();
+ show("observe");
+}
+
+
+
+async function assessWithServer(){
+  if(!current){return;}
+  var status=byId("aiConnection");
+  if(status)status.innerHTML="<b>Mode:</b> Menghubungkan ke AI server...";
+  try{
+    var response=await fetch("/api/assess",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        staff:current.staff,
+        date:current.date,
+        target:current.target,
+        category:current.category,
+        transcript:current.notes,
+        masterStandard:master
+      })
+    });
+    if(!response.ok)throw new Error("Server belum tersedia");
+    var result=await response.json();
+    current.aiResult=result;
+    if(status)status.innerHTML="<b>Mode:</b> AI server aktif";
+    renderServerAI(result);
+  }catch(err){
+    if(status)status.innerHTML="<b>Mode:</b> Prototype lokal — server AI belum aktif";
+    renderSample();
+  }
+}
+function renderServerAI(result){
+  var box=byId("aiBox");
+  if(!result){return;}
+  var html="<div class='box'><small>AI SERVER</small><div style='font-size:36px;font-weight:bold;color:#0757b8'>"+(result.overall||0)+"%</div><p>"+(result.overall_status||"")+"</p></div>";
+  var scores=result.actions||[];
+  for(var i=0;i<scores.length;i++){
+    var x=scores[i], cls=x.score>=70?"good":(x.score>0?"warn":"bad");
+    html+="<div class='box'><div class='actionhead'><b style='color:#0757b8'>"+x.action+"</b><span class='badge "+cls+"'>"+x.status+" · "+x.score+"%</span></div>";
+    if(x.evidence){html+="<p style='font-size:12px;line-height:1.5'><b>Bukti:</b> "+x.evidence+"</p>";}
+    if(x.improvement){html+="<p style='font-size:12px;line-height:1.5'><b>Improvement:</b> "+x.improvement+"</p>";}
+    html+="</div>";
+  }
+  if(result.conclusion){html+="<div class='box'><b style='color:#0757b8'>Kesimpulan AI</b><p style='font-size:13px;line-height:1.6'>"+result.conclusion+"</p></div>";}
+  box.innerHTML=html;
+}
+
+async function checkDatabase(){
+  var el=byId("dbConnection"); if(!el)return;
+  try{
+    var r=await fetch("/api/health");
+    var j=await r.json();
+    el.innerHTML="<b>Database:</b> "+(j.database||"Belum dikonfigurasi");
+  }catch(e){
+    el.innerHTML="<b>Database:</b> Server belum aktif";
+  }
+}
+function renderAI(){
+ var box=byId("aiBox"), d=getData();
+ if(!d.length){box.innerHTML="<div class='box'>Belum ada hasil AI tersimpan. Buat satu observasi terlebih dahulu.</div>";return;}
+ var latest=d[d.length-1], html="<div class='box'><b>"+latest.target+"</b><br><small>"+latest.category+" · "+latest.date+"</small><h1 style='color:#0757b8'>"+latest.overall+"%</h1><p>Overall Consistency</p></div>";
+ for(var i=0;i<latest.scores.length;i++){
+   var x=latest.scores[i];
+   html+="<div class='box'><b style='color:#0757b8'>"+x.action+"</b><div style='margin-top:6px'>"+x.status+" — "+x.score+"%</div>";
+   for(var j=0;j<x.details.length;j++){var z=x.details[j];html+="<div style='font-size:11px;padding:7px;margin-top:5px;background:#f7fbff;border-radius:8px'>"+z.status+" · "+z.indicator+"</div>";}
+   html+="</div>";
+ }
+ box.innerHTML=html;
+}
+
+function setupDaily(){
+ var d=getData(), users={}, sel=byId("dailyUser");
+ sel.innerHTML="";
+ for(var i=0;i<d.length;i++){users[d[i].staff]=true;}
+ var keys=Object.keys(users);
+ if(!keys.length){sel.innerHTML="<option>Belum ada data</option>";byId("dailySummary").innerHTML="<div class='box'>Belum ada observasi tersimpan.</div>";return;}
+ for(var j=0;j<keys.length;j++){var o=document.createElement("option");o.value=keys[j];o.textContent=keys[j].replace("|"," — ");sel.appendChild(o);}
+ renderDailySummary();
+}
+function renderDailySummary(){
+ var v=byId("dailyUser").value,d=getData(),rows=[];
+ for(var i=0;i<d.length;i++){if(d[i].staff===v)rows.push(d[i]);}
+ if(!rows.length){byId("dailySummary").innerHTML="<div class='box'>Belum ada data.</div>";return;}
+ var p=v.split("|"),overall=0;
+ for(var j=0;j<rows.length;j++){overall+=rows[j].overall;}
+ overall=Math.round(overall/rows.length);
+ var actionRows=[];
+ for(var a=0;a<actions.length;a++){
+   var sum=0,count=0;
+   for(var r=0;r<rows.length;r++){
+     for(var s=0;s<rows[r].scores.length;s++){
+       if(rows[r].scores[s].action===actions[a]){sum+=rows[r].scores[s].score;count++;}
+     }
+   }
+   actionRows.push({action:actions[a],score:count?Math.round(sum/count):0});
+ }
+ actionRows.sort(function(x,y){return y.score-x.score;});
+ var strong=actionRows.slice(0,3), improve=actionRows.slice(-3).reverse();
+ var status=overall>=85?"Sangat konsisten":(overall>=70?"Konsisten":(overall>=55?"Belum konsisten":"Perlu improvement"));
+ byId("dailyMeta").innerHTML="<div style='font-size:12px;color:#627c96'>"+p[0]+" — "+p[1]+" · "+rows.length+" sampel</div>";
+ var html="<div class='box score'><div><small>OVERALL DAILY CONSISTENCY</small><strong>"+overall+"%</strong><div style='font-weight:bold;color:#1d7b50'>"+status+"</div></div><div class='ring'>"+overall+"%</div></div>";
+ html+="<div class='box'><b style='color:#0757b8'>8 Action — Rata-rata</b><table style='margin-top:8px'><tr><th>Action</th><th>Nilai</th><th>Status</th></tr>";
+ for(var k=0;k<actionRows.length;k++){
+   var st=actionRows[k].score>=70?"Konsisten":(actionRows[k].score>0?"Tidak konsisten":"Tidak dilakukan");
+   html+="<tr><td>"+actionRows[k].action+"</td><td><b>"+actionRows[k].score+"%</b></td><td>"+st+"</td></tr>";
+ }
+ html+="</table></div>";
+ html+="<div class='box'><b style='color:#1d7b50'>💪 Kekuatan Utama</b><ol>";
+ for(var q=0;q<strong.length;q++){html+="<li style='font-size:12px;margin:7px 0'>"+strong[q].action+" — <b>"+strong[q].score+"%</b></li>";}
+ html+="</ol><b style='color:#b3473f'>🎯 Prioritas Improvement</b><ol>";
+ for(var q2=0;q2<improve.length;q2++){html+="<li style='font-size:12px;margin:7px 0'>"+improve[q2].action+" — <b>"+improve[q2].score+"%</b></li>";}
+ html+="</ol></div>";
+ html+="<div class='box'><b style='color:#0757b8'>Kesimpulan AI</b><p style='font-size:13px;line-height:1.6'>Berdasarkan "+rows.length+" sampel observasi, penerapan keseluruhan 8 Action oleh <b>"+p[1]+"</b> berada pada <b>"+overall+"%</b> dan dikategorikan <b>"+status.toLowerCase()+"</b>. Kekuatan utama terdapat pada "+strong[0].action+", sedangkan prioritas improvement pertama adalah "+improve[0].action+". Hasil ini menjadi dasar coaching dan evaluasi konsistensi harian.</p></div>";
+ byId("dailySummary").innerHTML=html;
+}
+function renderReports(){
+ var d=getData();
+ if(!d.length){byId("reportsBox").innerHTML="<div class='box'>Belum ada data observasi.</div>";return;}
+ var total=0;
+ for(var i=0;i<d.length;i++){total+=d[i].overall;}
+ var avg=Math.round(total/d.length);
+ var html="<div class='box'><small>TOTAL OBSERVASI</small><div style='font-size:36px;font-weight:bold;color:#0757b8'>"+d.length+"</div><div>Rata-rata konsistensi: <b>"+avg+"%</b></div></div>";
+ html+="<div class='box'><table><tr><th>Tanggal</th><th>User ID</th><th>Target</th><th>Score</th></tr>";
+ for(var j=d.length-1;j>=0;j--){var p=d[j].staff.split("|");html+="<tr><td>"+d[j].date+"</td><td>"+p[0]+"</td><td>"+d[j].target+"</td><td>"+d[j].overall+"%</td></tr>";}
+ html+="</table></div>";
+ byId("reportsBox").innerHTML=html;
+}
+
+function renderCompare(){
+ var d=getData(), map={};
+ for(var i=0;i<d.length;i++){
+   var p=d[i].staff.split("|"),id=p[0],name=p[1];
+   if(!map[id])map[id]={id:id,name:name,n:0,total:0};
+   map[id].n++;map[id].total+=d[i].overall;
+ }
+ var arr=[];
+ for(var key in map){arr.push(map[key]);}
+ arr.sort(function(a,b){return b.total/b.n-a.total/a.n;});
+ if(!arr.length){byId("compareBox").innerHTML="<div class='box'>Belum ada data pembanding.</div>";return;}
+ var html="<div class='box'><table><tr><th>#</th><th>User ID</th><th>Nama</th><th>Obs</th><th>Konsistensi</th></tr>";
+ for(var i=0;i<arr.length;i++){html+="<tr><td>"+(i+1)+"</td><td>"+arr[i].id+"</td><td>"+arr[i].name+"</td><td>"+arr[i].n+"</td><td><b>"+Math.round(arr[i].total/arr[i].n)+"%</b></td></tr>";}
+ html+="</table></div>";
+ byId("compareBox").innerHTML=html;
+}
+
+function setupReport(){
+ var d=getData(), users={}, select=byId("reportUser");
+ select.innerHTML="";
+ for(var i=0;i<d.length;i++){users[d[i].staff]=true;}
+ var keys=Object.keys(users);
+ if(!keys.length){select.innerHTML="<option>Belum ada data</option>";byId("reportBox").innerHTML="";return;}
+ for(var j=0;j<keys.length;j++){var o=document.createElement("option");o.value=keys[j];o.textContent=keys[j].replace("|"," — ");select.appendChild(o);}
+ renderReport();
+}
+
+function renderReport(){
+ var v=byId("reportUser").value,d=getData(),rows=[];
+ for(var i=0;i<d.length;i++){if(d[i].staff===v)rows.push(d[i]);}
+ if(!rows.length){byId("reportBox").innerHTML="Belum ada data.";return;}
+ var p=v.split("|"),total=0;
+ for(var j=0;j<rows.length;j++){total+=rows[j].overall;}
+ var avg=Math.round(total/rows.length);
+ var html="<h2>DAILY REPORT OBSERVATION</h2><b>creates by dee</b><p>User ID: <b>"+p[0]+"</b><br>Nama: <b>"+p[1]+"</b><br>Total observasi: <b>"+rows.length+"</b></p><h1 style='color:#0757b8'>"+avg+"%</h1><p>Overall Consistency</p>";
+ html+="<table><tr><th>Target</th><th>Kategori</th><th>Score</th></tr>";
+ for(var k=0;k<rows.length;k++){html+="<tr><td>"+rows[k].target+"</td><td>"+rows[k].category.replace("Nasabah ","")+"</td><td>"+rows[k].overall+"%</td></tr>";}
+ html+="</table><h3 style='color:#0757b8'>Rata-rata 8 Action</h3><table><tr><th>Action</th><th>Rata-rata</th><th>Status</th></tr>";
+for(var a=0;a<actions.length;a++){
+ var s=0;
+ for(var b=0;b<rows.length;b++){for(var c=0;c<rows[b].scores.length;c++){if(rows[b].scores[c].action===actions[a])s+=rows[b].scores[c].score;}}
+ var av=Math.round(s/rows.length),st=av>=70?"Konsisten":(av>0?"Tidak konsisten":"Tidak dilakukan");
+ html+="<tr><td>"+actions[a]+"</td><td>"+av+"%</td><td>"+st+"</td></tr>";
+}
+html+="</table><p><b>Kesimpulan keseluruhan:</b> Penerapan 8 Action oleh "+p[1]+" dari "+rows.length+" sampel memiliki konsistensi rata-rata "+avg+"%. Gunakan Action dengan hasil terendah sebagai prioritas coaching.</p>";
+ byId("reportBox").innerHTML=html;
+}
+
+function renderMaster(){
+ var html="";
+ for(var i=0;i<actions.length;i++){
+   var a=actions[i],list=master[a];
+   html+="<div class='box'><b style='color:#0757b8'>"+(i+1)+". "+a+"</b><ul>";
+   for(var j=0;j<list.length;j++){html+="<li style='font-size:12px;line-height:1.6'>"+list[j]+"</li>";}
+   html+="</ul></div>";
+ }
+ byId("masterBox").innerHTML=html;
+}
+
+init();checkDatabase();
+</script>
+</body>
+</html>
