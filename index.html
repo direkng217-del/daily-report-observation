@@ -166,7 +166,7 @@ var recognition=null;
 var recording=false;
 
 function byId(id){return document.getElementById(id);}
-function show(id){
+window.show = function(id){
  var pages=document.querySelectorAll(".page");
  for(var i=0;i<pages.length;i++){pages[i].classList.remove("active");}
  byId(id).classList.add("active");
