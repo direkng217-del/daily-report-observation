@@ -283,7 +283,7 @@ function aiAnalyzeAction(action,text){
    details.push({indicator:list[i],evidence:ev,status:ev===100?"Dilakukan":ev===50?"Sebagian":"Belum ditemukan"});
  }
  var score=list.length?Math.round(total/list.length):0;
- var status=score>=100?"Dilakukan":score>0?"belum konsisten":score<0?"Tidak dilakukan";
+ var status=score>=100?"Dilakukan":score>0?"belum konsisten""Tidak dilakukan";
  return {action:action,score:score,status:status,details:details};
 }
 function analyze(){
