@@ -41,10 +41,57 @@ button.primary{width:100%;background:#0757b8;color:#fff;border:0;border-radius:1
 table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:9px 4px;border-bottom:1px solid #e2ebf3}th{color:#0757b8}
 .bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);height:64px;background:#fff;border-top:1px solid #d9e6f3;display:flex;justify-content:space-around;z-index:10}.bottom button{border:0;background:none;color:#52718e;font-size:18px}.bottom small{display:block;font-size:9px;margin-top:3px}
 @media print{header,.bottom,.back,button{display:none!important}.page{display:none!important}.page.active{display:block!important}.app{max-width:none}}
+/* SPLASH SCREEN */
+#splashScreen{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:linear-gradient(135deg,#0757b8,#4b9ae8);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#fff;
+}
+
+#splashScreen img{
+  width:110px;
+  height:110px;
+  object-fit:contain;
+  margin-bottom:20px;
+}
+
+#splashScreen h1{
+  margin:0;
+  font-size:28px;
+  font-weight:900;
+}
+
+#splashScreen p{
+  margin:8px 0 0;
+  font-size:14px;
+  font-weight:bold;
+  opacity:.95;
+}
+
+#splashScreen .created{
+  position:absolute;
+  bottom:35px;
+  font-size:13px;
+  font-style:italic;
+  font-weight:bold;
+}
 </style>
 </head>
 <body>
-<div class="app">
+<div id="splashScreen">
+  <img src="Icondro.png" alt="8A">
+  <h1>Daily Report Observation</h1>
+  <p>Observasi layanan harian dengan bantuan AI</p>
+  <div class="created">creates by dee</div>
+</div>
+ <div class="app">
 <header><div class="brand">DAILY REPORT OBSERVATION</div><div class="by">creates by dee</div></header>
 <main>
 
