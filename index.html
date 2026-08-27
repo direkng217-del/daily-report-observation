@@ -82,6 +82,18 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;p
   font-style:italic;
   font-weight:bold;
 }
+ #splashScreen .startBtn{
+  margin-top:28px;
+  padding:13px 30px;
+  border:0;
+  border-radius:25px;
+  background:#fff;
+  color:#0757b8;
+  font-size:15px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 5px 15px rgba(0,0,0,.18);
+}
 </style>
 </head>
 <body>
@@ -89,6 +101,7 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;p
   <img src="Icondro.png" alt="8A">
   <h1>Daily Report Observation</h1>
   <p>Observasi layanan harian dengan bantuan AI</p>
+ <button class="startBtn" onclick="startApp()">Mulai</button>
   <div class="created">creates by dee</div>
 </div>
  <div class="app">
@@ -566,7 +579,9 @@ function renderMaster(){
  }
  byId("masterBox").innerHTML=html;
 }
-
+function startApp(){
+  document.getElementById("splashScreen").style.display="none";
+}
 init();checkDatabase();
 </script>
 </body>
