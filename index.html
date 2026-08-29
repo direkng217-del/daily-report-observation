@@ -172,6 +172,33 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;p
 <div class="box voice"><div class="mic">🎙️</div><b id="voiceTitle">Voice Observation</b><p id="voiceStatus">Tekan mikrofon lalu ceritakan hasil pengamatan.</p><button id="recordBtn" class="primary">Mulai Rekam</button></div>
 <div class="box"><label>Catatan / hasil transkripsi<textarea id="notes" rows="6" placeholder="Hasil transkripsi akan muncul di sini..."></textarea></label><div class="row"><button class="secondary" onclick="document.getElementById('notes').value=''">Bersihkan</button><button class="primary" onclick="analyze()">Analisis</button></div></div>
 <div class="box"><b>Target hari ini</b><div style="display:flex;justify-content:space-between;margin:9px 0;font-size:12px"><span id="sampleText">0 / 15</span><span id="lastText">Belum ada</span></div><div class="progress"><i id="sampleProgress"></i></div></div>
+<div class="box">
+  <h3 style="color:#0757b8;">Penilaian Manual</h3>
+  <p style="font-size:12px;color:#66809a;">
+    Isi penilaian berdasarkan pengamatan langsung.
+  </p>
+
+  <label><b>Satisfaction</b></label>
+  <select id="manualSatisfaction">
+    <option value="0">Belum dilakukan — 0%</option>
+    <option value="50">Sebagian dilakukan — 50%</option>
+    <option value="100">Dilakukan — 100%</option>
+  </select>
+
+  <label><b>Checking</b></label>
+  <select id="manualChecking">
+    <option value="0">Belum dilakukan — 0%</option>
+    <option value="50">Sebagian dilakukan — 50%</option>
+    <option value="100">Dilakukan — 100%</option>
+  </select>
+
+  <label><b>Report & Follow Up</b></label>
+  <select id="manualReport">
+    <option value="0">Belum dilakukan — 0%</option>
+    <option value="50">Sebagian dilakukan — 50%</option>
+    <option value="100">Dilakukan — 100%</option>
+  </select>
+</div>
 </section>
 
 <section id="sample" class="page">
@@ -374,26 +401,61 @@ function aiAnalyzeAction(action,text){
  }
  var score=list.length?Math.round(total/list.length):0;
  var status=score>=100?"Dilakukan":score>0?"belum konsisten":"Tidak dilakukan";
- return {action:action,score:score,status:status,details:details};
-}
-function analyze(){
- var text=byId("notes").value;
- if(!text.trim()){alert("Isi hasil observasi atau gunakan Voice Observation terlebih dahulu.");return;}
- var scores=[];
- for(var i=0;i<actions.length;i++){scores.push(aiAnalyzeAction(actions[i],text));}
- var total=0;
- for(var j=0;j<scores.length;j++){total+=scores[j].score;}
- current={
-   staff:byId("staff").value,
-   date:byId("date").value,
-   target:target,
-   category:category,
-   notes:text,
-   scores:scores,
-   overall:Math.round(total/8)
- };
- renderSample();
- show("sample");
+ function analyze(){
+  var text=byId("notes").value;
+
+  if(!text.trim()){
+    alert("Isi hasil observasi atau gunakan Voice Observation terlebih dahulu.");
+    return;
+  }
+
+  var scores=[];
+
+  // 5 Action pertama dinilai berdasarkan Voice Observation + AI
+  for(var i=0;i<5;i++){
+    scores.push(aiAnalyzeAction(actions[i],text));
+  }
+
+  // 3 Action terakhir dinilai secara manual
+  var manualItems=[
+    {action:"Satisfaction",id:"manualSatisfaction"},
+    {action:"Checking",id:"manualChecking"},
+    {action:"Report & Follow Up",id:"manualReport"}
+  ];
+
+  for(var j=0;j<manualItems.length;j++){
+    var value=parseInt(byId(manualItems[j].id).value)||0;
+
+    scores.push({
+      action:manualItems[j].action,
+      score:value,
+      status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan",
+      details:[{
+        indicator:"Penilaian manual",
+        evidence:value,
+        status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan"
+      }]
+    });
+  }
+
+  var total=0;
+
+  for(var k=0;k<scores.length;k++){
+    total+=scores[k].score;
+  }
+
+  current={
+    staff:byId("staff").value,
+    date:byId("date").value,
+    target:target,
+    category:category,
+    notes:text,
+    scores:scores,
+    overall:Math.round(total/8)
+  };
+
+  renderSample();
+  show("sample");
 }
 function renderSample(){
  var r=current, parts=r.staff.split("|");
