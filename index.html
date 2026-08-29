@@ -401,6 +401,8 @@ function aiAnalyzeAction(action,text){
  }
  var score=list.length?Math.round(total/list.length):0;
  var status=score>=100?"Dilakukan":score>0?"belum konsisten":"Tidak dilakukan";
+ return {action:action,score:score,status:status,details:details};
+}
  function analyze(){
   var text=byId("notes").value;
 
