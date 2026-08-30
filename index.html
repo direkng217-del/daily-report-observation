@@ -179,40 +179,28 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;p
   </p>
 
   <label><b>Satisfaction</b></label>
-  <label><b>Satisfaction</b></label>
-<select id="manualSatisfaction">
-  <option value="0">Belum dilakukan — 0%</option>
-  <option value="50">Sebagian dilakukan — 50%</option>
-  <option value="100">Dilakukan — 100%</option>
-</select>
 
-<label>Catatan Satisfaction</label>
-<textarea id="noteSatisfaction" rows="3"
-  placeholder="Tuliskan hasil penilaian Satisfaction..."></textarea>
-
+<div class="manual-check">
+  <label><input type="checkbox" class="manualSat"> Memproses transaksi dengan cepat</label>
+  <label><input type="checkbox" class="manualSat"> Melayani dengan fokus</label>
+  <label><input type="checkbox" class="manualSat"> Memproses dengan teliti</label>
+  <label><input type="checkbox" class="manualSat"> Memberikan penjelasan yang lengkap</label>
+  <label><input type="checkbox" class="manualSat"> Memberikan solusi dengan tuntas</label>
+</div>
 
 <label><b>Checking</b></label>
-<select id="manualChecking">
-  <option value="0">Belum dilakukan — 0%</option>
-  <option value="50">Sebagian dilakukan — 50%</option>
-  <option value="100">Dilakukan — 100%</option>
-</select>
 
-<label>Catatan Checking</label>
-<textarea id="noteChecking" rows="3"
-  placeholder="Tuliskan hasil penilaian Checking..."></textarea>
-
+<div class="manual-check">
+  <label><input type="checkbox" class="manualChecking"> Pengecekan nasabah K1 untuk edukasi VOC CE</label>
+  <label><input type="checkbox" class="manualChecking"> Melakukan pengecekan sesuai standar Checking</label>
+</div>
 
 <label><b>Report & Follow Up</b></label>
-<select id="manualReport">
-  <option value="0">Belum dilakukan — 0%</option>
-  <option value="50">Sebagian dilakukan — 50%</option>
-  <option value="100">Dilakukan — 100%</option>
-</select>
 
-<label>Catatan Report & Follow Up</label>
-<textarea id="noteReport" rows="3"
-  placeholder="Tuliskan hasil penilaian Report & Follow Up..."></textarea>
+<div class="manual-check">
+  <label><input type="checkbox" class="manualReport"> Input penawaran solusi di TXN 2610 / IBS / BDSWeb / Selvi / Monica</label>
+  <label><input type="checkbox" class="manualReport"> Melakukan tindak lanjut atas penawaran solusi</label>
+</div>
 </div>
 </section>
 
@@ -438,23 +426,45 @@ var manualItems=[
   {action:"Report & Follow Up",id:"manualReport",noteId:"noteReport"}
 ];
 
-for(var j=0;j<manualItems.length;j++){
-  var value=parseInt(byId(manualItems[j].id).value)||0;
-  var note=byId(manualItems[j].noteId).value.trim();
+// 3 Action terakhir dinilai berdasarkan checklist manual
 
-  scores.push({
-    action:manualItems[j].action,
-    score:value,
-    status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan",
-    note:note,
-    details:[{
-      indicator:"Penilaian manual",
-      evidence:value,
-      note:note,
-      status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan"
-    }]
-  });
-}
+var satChecked=document.querySelectorAll(".manualSat:checked").length;
+var checkingChecked=document.querySelectorAll(".manualChecking:checked").length;
+var reportChecked=document.querySelectorAll(".manualReport:checked").length;
+
+var satScore=satChecked===0 ? 0 : (satChecked===5 ? 100 : 50);
+var checkingScore=checkingChecked===0 ? 0 : (checkingChecked===2 ? 100 : 50);
+var reportScore=reportChecked===0 ? 0 : (reportChecked===2 ? 100 : 50);
+
+scores.push({
+  action:"Satisfaction",
+  score:satScore,
+  status:satScore===100 ? "Dilakukan" : (satScore>0 ? "Belum konsisten" : "Tidak dilakukan"),
+  details:[{
+    indicator:satChecked+" dari 5 indikator dilakukan",
+    evidence:satScore
+  }]
+});
+
+scores.push({
+  action:"Checking",
+  score:checkingScore,
+  status:checkingScore===100 ? "Dilakukan" : (checkingScore>0 ? "Belum konsisten" : "Tidak dilakukan"),
+  details:[{
+    indicator:checkingChecked+" dari 2 indikator dilakukan",
+    evidence:checkingScore
+  }]
+});
+
+scores.push({
+  action:"Report & Follow Up",
+  score:reportScore,
+  status:reportScore===100 ? "Dilakukan" : (reportScore>0 ? "Belum konsisten" : "Tidak dilakukan"),
+  details:[{
+    indicator:reportChecked+" dari 2 indikator dilakukan",
+    evidence:reportScore
+  }]
+});
 
   var total=0;
 
@@ -556,10 +566,10 @@ function renderSample(){
   var bad=[];
 
   for(var k=0;k<r.scores.length;k++){
-    if(r.scores[k].score>=70){
-      good++;
+    if(r.scores[k].score===100){
+        good++;
     }else{
-      bad.push(r.scores[k].action);
+        bad.push(r.scores[k].action);
     }
   }
 
