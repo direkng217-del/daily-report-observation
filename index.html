@@ -476,22 +476,103 @@ for(var j=0;j<manualItems.length;j++){
   show("sample");
 }
 function renderSample(){
- var r=current, parts=r.staff.split("|");
- byId("sampleHead").innerHTML="<b>"+r.target+"</b><br><small>"+r.category+" · "+r.date+" · "+parts[0]+" — "+parts[1]+"</small><div style='margin-top:10px;font-size:28px;font-weight:bold;color:#0757b8'>"+r.overall+"%</div><small>Overall penerapan 8 Action</small>";
- var box=byId("sampleActions");box.innerHTML="";
- for(var i=0;i<r.scores.length;i++){
-   var x=r.scores[i], cls=x.score>=70?"good":(x.score>0?"warn":"bad");
-   var details="";
-   for(var j=0;j<x.details.length;j++){
-     var d=x.details[j];
-     var c=d.evidence===100?"good":(d.evidence===50?"warn":"bad");
-     details+="<div style='margin-top:7px;padding:8px;background:#f7fbff;border-radius:9px;font-size:11px'><span class='badge "+c+"'>"+d.status+"</span> "+d.indicator+"</div>";
-   }
-   box.innerHTML+="<div class='action'><div class='actionhead'><b>"+x.action+"</b><span class='badge "+cls+"'>"+x.status+" · "+x.score+"%</span></div><div style='margin-top:8px'>"+details+"</div></div>";
- }
- var good=0,bad=[];
- for(var k=0;k<r.scores.length;k++){if(r.scores[k].score>=70){good++;}else{bad.push(r.scores[k].action);}}
- byId("sampleConclusion").textContent="Pada "+r.target+", "+good+" dari 8 Action teridentifikasi konsisten. "+(bad.length?"Prioritas improvement: "+bad.join(", ")+".":"Tidak ada prioritas improvement pada sampel ini.");
+  var r=current;
+  if(!r)return;
+
+  var parts=r.staff.split("|");
+
+  byId("sampleHead").innerHTML=
+    "<b>"+r.target+"</b><br><small>"+
+    r.category+" • "+r.date+" • "+parts[0]+"</small>";
+
+  var box=byId("sampleActions");
+  box.innerHTML="";
+
+  for(var i=0;i<r.scores.length;i++){
+
+    var x=r.scores[i];
+
+    var cls=
+      x.score>=70 ? "good" :
+      x.score>0 ? "warn" : "bad";
+
+    var statusText=
+      x.score>=100 ? "Dilakukan" :
+      x.score>0 ? "Belum konsisten" :
+      "Tidak dilakukan";
+
+    var details="";
+
+    if(x.details && x.details.length){
+      for(var j=0;j<x.details.length;j++){
+
+        var d=x.details[j];
+
+        var evidenceClass=
+          d.evidence>=100 ? "good" :
+          d.evidence>0 ? "warn" : "bad";
+
+        details+=
+          "<div style='margin-top:7px;padding:8px;background:#f7fbff;border-radius:9px;'>"+
+          "<b>"+d.indicator+"</b><br>"+
+          "<span class='"+evidenceClass+"'>"+
+          (d.evidence>=100 ? "Dilakukan" :
+           d.evidence>0 ? "Sebagian" :
+           "Belum ditemukan")+
+          "</span>";
+
+        if(d.note){
+          details+=
+            "<div style='margin-top:5px;font-size:12px;'>"+
+            "<b>Catatan:</b> "+d.note+
+            "</div>";
+        }
+
+        details+="</div>";
+      }
+    }
+
+    if(x.note){
+      details+=
+        "<div style='margin-top:7px;padding:9px;background:#fff8e8;border-radius:9px;'>"+
+        "<b>Catatan Penilaian:</b><br>"+
+        x.note+
+        "</div>";
+    }
+
+    box.innerHTML+=
+      "<div class='action'>"+
+        "<div class='actionhead'>"+
+          "<b>"+x.action+"</b>"+
+          "<span class='"+cls+"'>"+
+            statusText+" • "+x.score+"%"+
+          "</span>"+
+        "</div>"+
+        details+
+      "</div>";
+  }
+
+  var good=0;
+  var bad=[];
+
+  for(var k=0;k<r.scores.length;k++){
+    if(r.scores[k].score>=70){
+      good++;
+    }else{
+      bad.push(r.scores[k].action);
+    }
+  }
+
+  var improvement=
+    bad.length ?
+    "Prioritas improvement: "+bad.join(", ")+"." :
+    "Seluruh 8 Action sudah teridentifikasi konsisten.";
+
+  byId("sampleConclusion").innerHTML=
+    "Pada <b>"+r.target+"</b>, "+
+    "<b>"+good+" dari 8 Action</b> teridentifikasi konsisten. "+
+    improvement+
+    "<br><br><b>Overall: "+r.overall+"%</b>";
 }
 function saveCurrent(){
  var d=getData();
