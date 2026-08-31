@@ -370,10 +370,11 @@ byId("recordBtn").onclick=function(){
  byId("recordBtn").textContent="⏹ Berhenti";
  byId("voiceTitle").textContent="Sedang merekam";
  byId("voiceStatus").textContent="Silakan ceritakan hasil pengamatan.";
- var finalText="";
+
  recognition.onresult=function(e){
+  var finalText="";
    var interim="";
-   for(var i=e.resultIndex;i<e.results.length;i++){
+   for(var i=0;i<e.results.length;i++){
      var t=e.results[i][0].transcript;
      if(e.results[i].isFinal){finalText+=t+" ";}else{interim+=t;}
    }
