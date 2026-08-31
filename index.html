@@ -257,26 +257,117 @@ AI membaca hasil Voice Observation, kemudian membandingkan bukti yang ditemukan 
 <script>
 var actions=["Greeting","Socialization","Education","Telling","Appreciation","Satisfaction","Checking","Report & Follow Up"];
 var master={
-"Greeting":["Senyum, sapa, salam","Memperkenalkan diri dan sebut nama","Menanyakan nama nasabah","Jika sudah dikenal, sebut nama nasabah","Menanyakan kebutuhan nasabah","Sigap, antusias, ramah dan berpenampilan menarik"],
-"Socialization":["Informasikan survey Hallo BCA untuk BSQ","Informasikan survey Gallup untuk CE kepada nasabah K1"],
-"Education":["Edukasi VOC BSQ melalui barcode atau kertas","Edukasi VOC CE melalui barcode atau kertas","Informasikan range 1 sampai 5 dan nilai terbaik adalah 5","Informasikan aplikasi atau mesin digital baru dan kegunaannya"],
-"Telling":["Tawarkan KKB, KPR, KSM, KUR, AIA, BCA Life","Masukkan telling ke Laporan Referral"],
-"Satisfaction":["Proses transaksi dengan cepat","Melayani dengan fokus","Konfirmasi dan cek ulang dengan teliti","Memberikan penjelasan lengkap","Telling solusi dengan tuntas"],
-"Appreciation":["Menawarkan bantuan lain","Mengucapkan terima kasih","Menyampaikan magic word"],
-"Checking":["Pengecekan nasabah K1 untuk edukasi VOC CE"],
-"Report & Follow Up":["Input penawaran solusi di TXN 261 pada IBS, BDSWeb, Selvi, Monica","melakukan tindak lanjut atas penawaran solusi yang dilakukan"]
+"Greeting":[
+"Petugas menyambut nasabah dengan mengucapkan selamat pagi atau selamat siang dan menyebut nama nasabah",
+"Petugas menanyakan nama nasabah",
+"Petugas menyebut nama nasabah dalam percakapan",
+"Petugas menanyakan kebutuhan nasabah"
+],
+
+"Socialization":[
+"Petugas menginformasikan survey layanan BSQ kepada nasabah melalui Hallo BCA",
+"Petugas menginformasikan survey layanan CE kepada nasabah melalui Gallup",
+"Petugas menginformasikan aplikasi dan mesin digital baru kepada nasabah"
+],
+
+"Education":[
+"Petugas melakukan edukasi kepada nasabah mengenai penilaian layanan melalui VOC BSQ",
+"Petugas melakukan edukasi kepada nasabah mengenai penilaian layanan melalui VOC CE"
+],
+
+"Telling":[
+"Petugas melakukan penawaran produk kepada nasabah seperti KPR KKB KSM KUR KMK AIA dan BCA Life",
+"Petugas menginformasikan event dan promo yang relevan kepada nasabah"
+],
+
+"Appreciation":[
+"Petugas menanyakan apakah nasabah masih memiliki kebutuhan lain sebelum mengakhiri layanan",
+"Petugas mengucapkan terima kasih kepada nasabah",
+"Petugas menyampaikan magic word kepada nasabah pada akhir layanan"
+],
+
+"Satisfaction":[
+"Memproses transaksi dengan cepat",
+"Melayani dengan fokus",
+"Memproses dengan teliti",
+"Memberikan penjelasan yang lengkap",
+"Memberikan solusi dengan tuntas"
+],
+
+"Checking":[
+"Pengecekan nasabah K1 untuk edukasi VOC CE",
+"Melakukan pengecekan sesuai standar Checking"
+],
+
+"Report & Follow Up":[
+"Input penawaran solusi di TXN 2610",
+"Melakukan tindak lanjut atas penawaran solusi"
+]
 };
 
 var words={
-"Greeting":["senyum","sapa","salam","perkenalkan","nama","kebutuhan","sigap","antusias","ramah"],
-"Socialization":["hallo bca","bsq","gallup","ce","survey"],
-"Education":["voc","barcode","kertas","range","5","digital","mesin"],
-"Telling":["kkb","kpr","ksm","kur","aia","bca life","referral"],
-"Satisfaction":["cepat","fokus","konfirmasi","cek ulang","teliti","penjelasan","solusi"],
-"Appreciation":["bantuan lain","terima kasih","magic word"],
-"Checking":["k1","cek nasabah"],
-"Report & Follow Up":["txn 261","ibs","bdsweb","selvi","monica","input","follow up"]
+"Greeting":[
+"selamat pagi",
+"selamat siang",
+"nama",
+"kebutuhan"
+],
+
+"Socialization":[
+"hallo bca",
+"bsq",
+"gallup",
+"ce",
+"aplikasi",
+"mesin digital"
+],
+
+"Education":[
+"voc bsq",
+"voc ce",
+"penilaian layanan"
+],
+
+"Telling":[
+"kpr",
+"kkb",
+"ksm",
+"kur",
+"kmk",
+"aia",
+"bca life",
+"event",
+"promo"
+],
+
+"Appreciation":[
+"kebutuhan lain",
+"terima kasih",
+"magic word"
+],
+
+"Satisfaction":[
+"cepat",
+"fokus",
+"teliti",
+"penjelasan",
+"solusi"
+],
+
+"Checking":[
+"k1",
+"pengecekan",
+"standar checking"
+],
+
+"Report & Follow Up":[
+"txn 2610",
+"follow up",
+"tindak lanjut",
+"penawaran solusi"
+]
 };
+ 
 
 var target="Nasabah ke-1";
 var category="Nasabah Dikenal";
@@ -562,27 +653,38 @@ function renderSample(){
       "</div>";
   }
 
-  var good=0;
-  var bad=[];
+ var good=0;
+var warning=0;
+var notDone=0;
+var improvement=[];
 
-  for(var k=0;k<r.scores.length;k++){
-    if(r.scores[k].score===100){
+for(var k=0;k<r.scores.length;k++){
+    var score=r.scores[k].score;
+
+    if(score===100){
         good++;
+    }else if(score>0){
+        warning++;
+        improvement.push(r.scores[k].action+" (Belum konsisten)");
     }else{
-        bad.push(r.scores[k].action);
+        notDone++;
+        improvement.push(r.scores[k].action+" (Tidak dilakukan)");
     }
-  }
+}
 
-  var improvement=
-    bad.length ?
-    "Prioritas improvement: "+bad.join(", ")+"." :
-    "Seluruh 8 Action sudah teridentifikasi konsisten.";
+var improvementText=
+    improvement.length ?
+    "Prioritas perbaikan: "+improvement.join(", ")+"."
+    
+    "Seluruh 8 Action sudah dilakukan dengan konsisten.";
 
-  byId("sampleConclusion").innerHTML=
-    "Pada <b>"+r.target+"</b>, "+
-    "<b>"+good+" dari 8 Action</b> teridentifikasi konsisten. "+
-    improvement+
-    "<br><br><b>Overall: "+r.overall+"%</b>";
+byId("sampleConclusion").innerHTML=
+    "Pada <b>"+r.target+"</b>, dari <b>8 Action</b>:<br>"+
+    "🟢 <b>"+good+" Action</b> dilakukan dengan konsisten.<br>"+
+    "🟡 <b>"+warning+" Action</b> belum konsisten.<br>"+
+    "🔴 <b>"+notDone+" Action</b> tidak dilakukan.<br><br>"+
+    improvementText+
+    "<br><br><b>Overall: "+r.overall+"%</b>"; 
 }
 function saveCurrent(){
  var d=getData();
