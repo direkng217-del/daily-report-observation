@@ -126,12 +126,9 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;p
   <img src="Icondro.png" alt="8A">
   <h1>Daily Report Observation</h1>
   <p>Observasi layanan dengan bantuan AI</p>
-<button class="startBtn" onclick="document.getElementById('splashScreen').style.display='none'">🚀 Mulai</button>
+ <button class="startBtn" onclick="startApp()">Mulai</button>
   <div class="created">creates by dee</div>
 </div>
- 
- </div>
- 
  <div class="app">
 <header><div class="brand">DAILY REPORT OBSERVATION</div><div class="by">creates by dee</div></header>
 <main>
@@ -182,28 +179,40 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;p
   </p>
 
   <label><b>Satisfaction</b></label>
+  <label><b>Satisfaction</b></label>
+<select id="manualSatisfaction">
+  <option value="0">Belum dilakukan — 0%</option>
+  <option value="50">Sebagian dilakukan — 50%</option>
+  <option value="100">Dilakukan — 100%</option>
+</select>
 
-<div class="manual-check">
-  <label><input type="checkbox" class="manualSat"> Memproses transaksi dengan cepat</label>
-  <label><input type="checkbox" class="manualSat"> Melayani dengan fokus</label>
-  <label><input type="checkbox" class="manualSat"> Memproses dengan teliti</label>
-  <label><input type="checkbox" class="manualSat"> Memberikan penjelasan yang lengkap</label>
-  <label><input type="checkbox" class="manualSat"> Memberikan solusi dengan tuntas</label>
-</div>
+<label>Catatan Satisfaction</label>
+<textarea id="noteSatisfaction" rows="3"
+  placeholder="Tuliskan hasil penilaian Satisfaction..."></textarea>
+
 
 <label><b>Checking</b></label>
+<select id="manualChecking">
+  <option value="0">Belum dilakukan — 0%</option>
+  <option value="50">Sebagian dilakukan — 50%</option>
+  <option value="100">Dilakukan — 100%</option>
+</select>
 
-<div class="manual-check">
-  <label><input type="checkbox" class="manualChecking"> Pengecekan nasabah K1 untuk edukasi VOC CE</label>
-  <label><input type="checkbox" class="manualChecking"> Melakukan pengecekan sesuai standar Checking</label>
-</div>
+<label>Catatan Checking</label>
+<textarea id="noteChecking" rows="3"
+  placeholder="Tuliskan hasil penilaian Checking..."></textarea>
+
 
 <label><b>Report & Follow Up</b></label>
+<select id="manualReport">
+  <option value="0">Belum dilakukan — 0%</option>
+  <option value="50">Sebagian dilakukan — 50%</option>
+  <option value="100">Dilakukan — 100%</option>
+</select>
 
-<div class="manual-check">
-  <label><input type="checkbox" class="manualReport"> Input penawaran solusi di TXN 2610 / IBS / BDSWeb / Selvi / Monica</label>
-  <label><input type="checkbox" class="manualReport"> Melakukan tindak lanjut atas penawaran solusi</label>
-</div>
+<label>Catatan Report & Follow Up</label>
+<textarea id="noteReport" rows="3"
+  placeholder="Tuliskan hasil penilaian Report & Follow Up..."></textarea>
 </div>
 </section>
 
@@ -260,117 +269,26 @@ AI membaca hasil Voice Observation, kemudian membandingkan bukti yang ditemukan 
 <script>
 var actions=["Greeting","Socialization","Education","Telling","Appreciation","Satisfaction","Checking","Report & Follow Up"];
 var master={
-"Greeting":[
-"Petugas menyambut nasabah dengan mengucapkan selamat pagi atau selamat siang dan menyebut nama nasabah",
-"Petugas menanyakan nama nasabah",
-"Petugas menyebut nama nasabah dalam percakapan",
-"Petugas menanyakan kebutuhan nasabah"
-],
-
-"Socialization":[
-"Petugas menginformasikan survey layanan BSQ kepada nasabah melalui Hallo BCA",
-"Petugas menginformasikan survey layanan CE kepada nasabah melalui Gallup",
-"Petugas menginformasikan aplikasi dan mesin digital baru kepada nasabah"
-],
-
-"Education":[
-"Petugas melakukan edukasi kepada nasabah mengenai penilaian layanan melalui VOC BSQ",
-"Petugas melakukan edukasi kepada nasabah mengenai penilaian layanan melalui VOC CE"
-],
-
-"Telling":[
-"Petugas melakukan penawaran produk kepada nasabah seperti KPR KKB KSM KUR KMK AIA dan BCA Life",
-"Petugas menginformasikan event dan promo yang relevan kepada nasabah"
-],
-
-"Appreciation":[
-"Petugas menanyakan apakah nasabah masih memiliki kebutuhan lain sebelum mengakhiri layanan",
-"Petugas mengucapkan terima kasih kepada nasabah",
-"Petugas menyampaikan magic word kepada nasabah pada akhir layanan"
-],
-
-"Satisfaction":[
-"Memproses transaksi dengan cepat",
-"Melayani dengan fokus",
-"Memproses dengan teliti",
-"Memberikan penjelasan yang lengkap",
-"Memberikan solusi dengan tuntas"
-],
-
-"Checking":[
-"Pengecekan nasabah K1 untuk edukasi VOC CE",
-"Melakukan pengecekan sesuai standar Checking"
-],
-
-"Report & Follow Up":[
-"Input penawaran solusi di TXN 2610",
-"Melakukan tindak lanjut atas penawaran solusi"
-]
+"Greeting":["Senyum, sapa, salam","Memperkenalkan diri dan sebut nama","Menanyakan nama nasabah","Jika sudah dikenal, sebut nama nasabah","Menanyakan kebutuhan nasabah","Sigap, antusias, ramah dan berpenampilan menarik"],
+"Socialization":["Informasikan survey Hallo BCA untuk BSQ","Informasikan survey Gallup untuk CE kepada nasabah K1"],
+"Education":["Edukasi VOC BSQ melalui barcode atau kertas","Edukasi VOC CE melalui barcode atau kertas","Informasikan range 1 sampai 5 dan nilai terbaik adalah 5","Informasikan aplikasi atau mesin digital baru dan kegunaannya"],
+"Telling":["Tawarkan KKB, KPR, KSM, KUR, AIA, BCA Life","Masukkan telling ke Laporan Referral"],
+"Satisfaction":["Proses transaksi dengan cepat","Melayani dengan fokus","Konfirmasi dan cek ulang dengan teliti","Memberikan penjelasan lengkap","Telling solusi dengan tuntas"],
+"Appreciation":["Menawarkan bantuan lain","Mengucapkan terima kasih","Menyampaikan magic word"],
+"Checking":["Pengecekan nasabah K1 untuk edukasi VOC CE"],
+"Report & Follow Up":["Input penawaran solusi di TXN 261 pada IBS, BDSWeb, Selvi, Monica","melakukan tindak lanjut atas penawaran solusi yang dilakukan"]
 };
 
 var words={
-"Greeting":[
-"selamat pagi",
-"selamat siang",
-"nama",
-"kebutuhan"
-],
-
-"Socialization":[
-"hallo bca",
-"bsq",
-"gallup",
-"ce",
-"aplikasi",
-"mesin digital"
-],
-
-"Education":[
-"voc bsq",
-"voc ce",
-"penilaian layanan"
-],
-
-"Telling":[
-"kpr",
-"kkb",
-"ksm",
-"kur",
-"kmk",
-"aia",
-"bca life",
-"event",
-"promo"
-],
-
-"Appreciation":[
-"kebutuhan lain",
-"terima kasih",
-"magic word"
-],
-
-"Satisfaction":[
-"cepat",
-"fokus",
-"teliti",
-"penjelasan",
-"solusi"
-],
-
-"Checking":[
-"k1",
-"pengecekan",
-"standar checking"
-],
-
-"Report & Follow Up":[
-"txn 2610",
-"follow up",
-"tindak lanjut",
-"penawaran solusi"
-]
+"Greeting":["senyum","sapa","salam","perkenalkan","nama","kebutuhan","sigap","antusias","ramah"],
+"Socialization":["hallo bca","bsq","gallup","ce","survey"],
+"Education":["voc","barcode","kertas","range","5","digital","mesin"],
+"Telling":["kkb","kpr","ksm","kur","aia","bca life","referral"],
+"Satisfaction":["cepat","fokus","konfirmasi","cek ulang","teliti","penjelasan","solusi"],
+"Appreciation":["bantuan lain","terima kasih","magic word"],
+"Checking":["k1","cek nasabah"],
+"Report & Follow Up":["txn 261","ibs","bdsweb","selvi","monica","input","follow up"]
 };
- 
 
 var target="Nasabah ke-1";
 var category="Nasabah Dikenal";
@@ -520,45 +438,23 @@ var manualItems=[
   {action:"Report & Follow Up",id:"manualReport",noteId:"noteReport"}
 ];
 
-// 3 Action terakhir dinilai berdasarkan checklist manual
+for(var j=0;j<manualItems.length;j++){
+  var value=parseInt(byId(manualItems[j].id).value)||0;
+  var note=byId(manualItems[j].noteId).value.trim();
 
-var satChecked=document.querySelectorAll(".manualSat:checked").length;
-var checkingChecked=document.querySelectorAll(".manualChecking:checked").length;
-var reportChecked=document.querySelectorAll(".manualReport:checked").length;
-
-var satScore=satChecked===0 ? 0 : (satChecked===5 ? 100 : 50);
-var checkingScore=checkingChecked===0 ? 0 : (checkingChecked===2 ? 100 : 50);
-var reportScore=reportChecked===0 ? 0 : (reportChecked===2 ? 100 : 50);
-
-scores.push({
-  action:"Satisfaction",
-  score:satScore,
-  status:satScore===100 ? "Dilakukan" : (satScore>0 ? "Belum konsisten" : "Tidak dilakukan"),
-  details:[{
-    indicator:satChecked+" dari 5 indikator dilakukan",
-    evidence:satScore
-  }]
-});
-
-scores.push({
-  action:"Checking",
-  score:checkingScore,
-  status:checkingScore===100 ? "Dilakukan" : (checkingScore>0 ? "Belum konsisten" : "Tidak dilakukan"),
-  details:[{
-    indicator:checkingChecked+" dari 2 indikator dilakukan",
-    evidence:checkingScore
-  }]
-});
-
-scores.push({
-  action:"Report & Follow Up",
-  score:reportScore,
-  status:reportScore===100 ? "Dilakukan" : (reportScore>0 ? "Belum konsisten" : "Tidak dilakukan"),
-  details:[{
-    indicator:reportChecked+" dari 2 indikator dilakukan",
-    evidence:reportScore
-  }]
-});
+  scores.push({
+    action:manualItems[j].action,
+    score:value,
+    status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan",
+    note:note,
+    details:[{
+      indicator:"Penilaian manual",
+      evidence:value,
+      note:note,
+      status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan"
+    }]
+  });
+}
 
   var total=0;
 
@@ -580,114 +476,22 @@ scores.push({
   show("sample");
 }
 function renderSample(){
-  var r=current;
-  if(!r)return;
-
-  var parts=r.staff.split("|");
-
-  byId("sampleHead").innerHTML=
-    "<b>"+r.target+"</b><br><small>"+
-    r.category+" • "+r.date+" • "+parts[0]+"</small>";
-
-  var box=byId("sampleActions");
-  box.innerHTML="";
-
-  for(var i=0;i<r.scores.length;i++){
-
-    var x=r.scores[i];
-
-    var cls=
-      x.score>=70 ? "good" :
-      x.score>0 ? "warn" : "bad";
-
-    var statusText=
-      x.score>=100 ? "Dilakukan" :
-      x.score>0 ? "Belum konsisten" :
-      "Tidak dilakukan";
-
-    var details="";
-
-    if(x.details && x.details.length){
-      for(var j=0;j<x.details.length;j++){
-
-        var d=x.details[j];
-
-        var evidenceClass=
-          d.evidence>=100 ? "good" :
-          d.evidence>0 ? "warn" : "bad";
-
-        details+=
-          "<div style='margin-top:7px;padding:8px;background:#f7fbff;border-radius:9px;'>"+
-          "<b>"+d.indicator+"</b><br>"+
-          "<span class='"+evidenceClass+"'>"+
-          (d.evidence>=100 ? "Dilakukan" :
-           d.evidence>0 ? "Sebagian" :
-           "Belum ditemukan")+
-          "</span>";
-
-        if(d.note){
-          details+=
-            "<div style='margin-top:5px;font-size:12px;'>"+
-            "<b>Catatan:</b> "+d.note+
-            "</div>";
-        }
-
-        details+="</div>";
-      }
-    }
-
-    if(x.note){
-      details+=
-        "<div style='margin-top:7px;padding:9px;background:#fff8e8;border-radius:9px;'>"+
-        "<b>Catatan Penilaian:</b><br>"+
-        x.note+
-        "</div>";
-    }
-
-    box.innerHTML+=
-      "<div class='action'>"+
-        "<div class='actionhead'>"+
-          "<b>"+x.action+"</b>"+
-          "<span class='"+cls+"'>"+
-            statusText+" • "+x.score+"%"+
-          "</span>"+
-        "</div>"+
-        details+
-      "</div>";
-  }
-
- var good=0;
-var warning=0;
-var notDone=0;
-var improvement=[];
-
-for(var k=0;k<r.scores.length;k++){
-    var score=r.scores[k].score;
-
-    if(score===100){
-        good++;
-    }else if(score>0){
-        warning++;
-        improvement.push(r.scores[k].action+" (Belum konsisten)");
-    }else{
-        notDone++;
-        improvement.push(r.scores[k].action+" (Tidak dilakukan)");
-    }
-}
-
-var improvementText=
-    improvement.length ?
-    "Prioritas perbaikan: "+improvement.join(", ")+"."
-    
-    "Seluruh 8 Action sudah dilakukan dengan konsisten.";
-
-byId("sampleConclusion").innerHTML=
-    "Pada <b>"+r.target+"</b>, dari <b>8 Action</b>:<br>"+
-    "🟢 <b>"+good+" Action</b> dilakukan dengan konsisten.<br>"+
-    "🟡 <b>"+warning+" Action</b> belum konsisten.<br>"+
-    "🔴 <b>"+notDone+" Action</b> tidak dilakukan.<br><br>"+
-    improvementText+
-    "<br><br><b>Overall: "+r.overall+"%</b>"; 
+ var r=current, parts=r.staff.split("|");
+ byId("sampleHead").innerHTML="<b>"+r.target+"</b><br><small>"+r.category+" · "+r.date+" · "+parts[0]+" — "+parts[1]+"</small><div style='margin-top:10px;font-size:28px;font-weight:bold;color:#0757b8'>"+r.overall+"%</div><small>Overall penerapan 8 Action</small>";
+ var box=byId("sampleActions");box.innerHTML="";
+ for(var i=0;i<r.scores.length;i++){
+   var x=r.scores[i], cls=x.score>=70?"good":(x.score>0?"warn":"bad");
+   var details="";
+   for(var j=0;j<x.details.length;j++){
+     var d=x.details[j];
+     var c=d.evidence===100?"good":(d.evidence===50?"warn":"bad");
+     details+="<div style='margin-top:7px;padding:8px;background:#f7fbff;border-radius:9px;font-size:11px'><span class='badge "+c+"'>"+d.status+"</span> "+d.indicator+"</div>";
+   }
+   box.innerHTML+="<div class='action'><div class='actionhead'><b>"+x.action+"</b><span class='badge "+cls+"'>"+x.status+" · "+x.score+"%</span></div><div style='margin-top:8px'>"+details+"</div></div>";
+ }
+ var good=0,bad=[];
+ for(var k=0;k<r.scores.length;k++){if(r.scores[k].score>=70){good++;}else{bad.push(r.scores[k].action);}}
+ byId("sampleConclusion").textContent="Pada "+r.target+", "+good+" dari 8 Action teridentifikasi konsisten. "+(bad.length?"Prioritas improvement: "+bad.join(", ")+".":"Tidak ada prioritas improvement pada sampel ini.");
 }
 function saveCurrent(){
  var d=getData();
