@@ -475,65 +475,96 @@ function aiAnalyzeAction(action,text){
  var score=list.length?Math.round(total/list.length):0;
  var status=score>=100?"Dilakukan":score>0?"belum konsisten":"Tidak dilakukan";
  return {action:action,score:score,status:status,details:details};
-}
- function analyze(){
-  var text=byId("notes").value;
+function analyze(){
 
-  if(!text.trim()){
-    alert("Isi hasil observasi atau gunakan Voice Observation terlebih dahulu.");
+  var actionBoxes = document.querySelectorAll("#actionChecklist > .box");
+  var scores = [];
+
+  if(!actionBoxes.length){
+    alert("Data 8 Action belum tersedia.");
     return;
   }
 
-  var scores=[];
+  for(var i=0; i<actionBoxes.length; i++){
 
-  // 5 Action pertama dinilai berdasarkan Voice Observation + AI
-  for(var i=0;i<5;i++){
-    scores.push(aiAnalyzeAction(actions[i],text));
+    var actionBox = actionBoxes[i];
+    var titleEl = actionBox.querySelector("h3");
+
+    if(!titleEl) continue;
+
+    var action = titleEl.textContent.trim();
+
+    var items = actionBox.querySelectorAll('input[type="radio"]');
+
+    var total = 0;
+    var dilakukan = 0;
+    var tidakDilakukan = 0;
+
+    for(var j=0; j<items.length; j++){
+
+      if(items[j].checked){
+
+        if(items[j].value === "100"){
+          total++;
+          dilakukan++;
+        }
+
+        if(items[j].value === "0"){
+          total++;
+          tidakDilakukan++;
+        }
+
+      }
+
+    }
+
+    var noteEl = actionBox.querySelector("textarea");
+    var note = noteEl ? noteEl.value.trim() : "";
+
+    var score = total > 0
+      ? Math.round((dilakukan / total) * 100)
+      : 0;
+
+    var status = score >= 100
+      ? "Dilakukan"
+      : score > 0
+      ? "Sebagian dilakukan"
+      : "Tidak dilakukan";
+
+    scores.push({
+      action: action,
+      score: score,
+      status: status,
+      dilakukan: dilakukan,
+      tidakDilakukan: tidakDilakukan,
+      note: note
+    });
   }
-// 3 Action terakhir dinilai secara manual + catatan penilaian
-var manualItems=[
-  {action:"Satisfaction",id:"manualSatisfaction",noteId:"noteSatisfaction"},
-  {action:"Checking",id:"manualChecking",noteId:"noteChecking"},
-  {action:"Report & Follow Up",id:"manualReport",noteId:"noteReport"}
-];
 
-for(var j=0;j<manualItems.length;j++){
-  var value=parseInt(byId(manualItems[j].id).value)||0;
-  var note=byId(manualItems[j].noteId).value.trim();
+  var totalScore = 0;
 
-  scores.push({
-    action:manualItems[j].action,
-    score:value,
-    status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan",
-    note:note,
-    details:[{
-      indicator:"Penilaian manual",
-      evidence:value,
-      note:note,
-      status:value>=100?"Dilakukan":value>0?"Belum konsisten":"Tidak dilakukan"
-    }]
-  });
-}
-
-  var total=0;
-
-  for(var k=0;k<scores.length;k++){
-    total+=scores[k].score;
+  for(var k=0; k<scores.length; k++){
+    totalScore += scores[k].score;
   }
 
-  current={
-    staff:byId("staff").value,
-    date:byId("date").value,
-    target:target,
-    category:category,
-    notes:text,
-    scores:scores,
-    overall:Math.round(total/8)
+  var overall = scores.length
+    ? Math.round(totalScore / scores.length)
+    : 0;
+
+  current = {
+    staff: byId("staff").value,
+    date: byId("date").value,
+    target: target,
+    category: category,
+    notes: "",
+    scores: scores,
+    overall: overall
   };
 
   renderSample();
   show("sample");
-}
+ }
+ 
 function renderSample(){
  var r=current, parts=r.staff.split("|");
  byId("sampleHead").innerHTML="<b>"+r.target+"</b><br><small>"+r.category+" · "+r.date+" · "+parts[0]+" — "+parts[1]+"</small><div style='margin-top:10px;font-size:28px;font-weight:bold;color:#0757b8'>"+r.overall+"%</div><small>Overall penerapan 8 Action</small>";
