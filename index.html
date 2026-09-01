@@ -309,43 +309,84 @@ function renderActionChecklist(){
   for(var i=0;i<actions.length;i++){
     var action=actions[i];
 
+    /* Kotak utama setiap Action */
     var actionBox=document.createElement("div");
-    actionBox.className="box";
-    actionBox.style.marginTop="12px";
+    actionBox.style.marginTop="14px";
+    actionBox.style.border="1px solid #d9e4ee";
+    actionBox.style.borderRadius="14px";
+    actionBox.style.overflow="hidden";
+    actionBox.style.background="#ffffff";
 
-    var title=document.createElement("h3");
-    title.style.color="#0757b8";
+    /* Judul Action */
+    var title=document.createElement("div");
     title.textContent=action;
+    title.style.background="#4b237f";
+    title.style.color="#ffffff";
+    title.style.padding="14px 16px";
+    title.style.fontWeight="700";
+    title.style.fontSize="17px";
+
     actionBox.appendChild(title);
 
+    /* Daftar item */
     var items=master[action]||[];
 
     for(var j=0;j<items.length;j++){
       var itemBox=document.createElement("div");
-      itemBox.style.marginTop="10px";
-      itemBox.style.padding="10px";
-      itemBox.style.border="1px solid #d9e4ee";
-      itemBox.style.borderRadius="10px";
+      itemBox.style.padding="12px 14px";
+      itemBox.style.borderBottom="1px solid #e5eaf0";
 
       var text=document.createElement("div");
       text.textContent=items[j];
-      text.style.marginBottom="8px";
+      text.style.marginBottom="10px";
+      text.style.lineHeight="1.45";
+      text.style.fontSize="14px";
+
       itemBox.appendChild(text);
 
-      var name="check_"+i+"_"+j;
+      /* Nama radio dibuat unik untuk setiap item */
+      var name="action_"+i+"_"+j;
 
       var yes=document.createElement("label");
-      yes.style.marginRight="18px";
-      yes.innerHTML='<input type="radio" name="'+name+'" value="100"> Dilakukan';
-      itemBox.appendChild(yes);
+      yes.style.marginRight="22px";
+      yes.innerHTML=
+        '<input type="radio" name="'+name+'" value="100"> Dilakukan';
 
       var no=document.createElement("label");
-      no.innerHTML='<input type="radio" name="'+name+'" value="0"> Tidak dilakukan';
+      no.innerHTML=
+        '<input type="radio" name="'+name+'" value="0"> Tidak dilakukan';
+
+      itemBox.appendChild(yes);
       itemBox.appendChild(no);
 
       actionBox.appendChild(itemBox);
     }
 
+    /* Kotak catatan */
+    var noteBox=document.createElement("div");
+    noteBox.style.background="#f0e8fa";
+    noteBox.style.padding="12px 14px";
+
+    var noteLabel=document.createElement("div");
+    noteLabel.textContent="Catatan Penilaian "+action;
+    noteLabel.style.fontWeight="700";
+    noteLabel.style.marginBottom="8px";
+
+    var note=document.createElement("textarea");
+    note.rows=3;
+    note.placeholder="Tuliskan hasil penilaian "+action+"...";
+    note.style.width="100%";
+    note.style.boxSizing="border-box";
+    note.style.border="1px solid #d5c4e8";
+    note.style.borderRadius="10px";
+    note.style.padding="10px";
+    note.style.background="#ffffff";
+    note.setAttribute("data-action-note",action);
+
+    noteBox.appendChild(noteLabel);
+    noteBox.appendChild(note);
+
+    actionBox.appendChild(noteBox);
     box.appendChild(actionBox);
   }
 }
