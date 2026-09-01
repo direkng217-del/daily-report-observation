@@ -169,11 +169,16 @@ table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;p
 <button class="cat selected" data-cat="Nasabah Dikenal">Dikenal</button><button class="cat" data-cat="Nasabah Tidak Dikenal">Tidak Dikenal</button><button class="cat" data-cat="Nasabah WIC">WIC</button>
 </div>
 </div>
-<div class="box voice"><div class="mic">🎙️</div><b id="voiceTitle">Voice Observation</b><p id="voiceStatus">Tekan mikrofon lalu ceritakan hasil pengamatan.</p><button id="recordBtn" class="primary">Mulai Rekam</button></div>
-<div class="box"><label>Catatan / hasil transkripsi<textarea id="notes" rows="6" placeholder="Hasil transkripsi akan muncul di sini..."></textarea></label><div class="row"><button class="secondary" onclick="document.getElementById('notes').value=''">Bersihkan</button><button class="primary" onclick="analyze()">Analisis</button></div></div>
-<div class="box"><b>Target hari ini</b><div style="display:flex;justify-content:space-between;margin:9px 0;font-size:12px"><span id="sampleText">0 / 15</span><span id="lastText">Belum ada</span></div><div class="progress"><i id="sampleProgress"></i></div></div>
 <div class="box">
-  <h3 style="color:#0757b8;">Penilaian Manual</h3>
+<h3>Penilaian 8 Action</h3>
+<p style="font-size:12px;color:#66809a;">
+Lakukan penilaian berdasarkan hasil observasi langsung terhadap petugas.
+</p>
+
+<div id="actionChecklist"></div>
+</div>
+<div class="box">
+  <h3 style="color:#0757b8;">Penilaian Manual</h3><di
   <p style="font-size:12px;color:#66809a;">
     Isi penilaian berdasarkan pengamatan langsung.
   </p>
@@ -295,7 +300,56 @@ var category="Nasabah Dikenal";
 var current=null;
 var recognition=null;
 var recording=false;
+function renderActionChecklist(){
+  var box=byId("actionChecklist");
+  if(!box)return;
 
+  box.innerHTML="";
+
+  for(var i=0;i<actions.length;i++){
+    var action=actions[i];
+
+    var actionBox=document.createElement("div");
+    actionBox.className="box";
+    actionBox.style.marginTop="12px";
+
+    var title=document.createElement("h3");
+    title.style.color="#0757b8";
+    title.textContent=action;
+    actionBox.appendChild(title);
+
+    var items=master[action]||[];
+
+    for(var j=0;j<items.length;j++){
+      var itemBox=document.createElement("div");
+      itemBox.style.marginTop="10px";
+      itemBox.style.padding="10px";
+      itemBox.style.border="1px solid #d9e4ee";
+      itemBox.style.borderRadius="10px";
+
+      var text=document.createElement("div");
+      text.textContent=items[j];
+      text.style.marginBottom="8px";
+      itemBox.appendChild(text);
+
+      var name="check_"+i+"_"+j;
+
+      var yes=document.createElement("label");
+      yes.style.marginRight="18px";
+      yes.innerHTML='<input type="radio" name="'+name+'" value="100"> Dilakukan';
+      itemBox.appendChild(yes);
+
+      var no=document.createElement("label");
+      no.innerHTML='<input type="radio" name="'+name+'" value="0"> Tidak dilakukan';
+      itemBox.appendChild(no);
+
+      actionBox.appendChild(itemBox);
+    }
+
+    box.appendChild(actionBox);
+  }
+}
+ renderActionChecklist();
 function byId(id){return document.getElementById(id);}
 window.show = function(id){
  var pages=document.querySelectorAll(".page");
