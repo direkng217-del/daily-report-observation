@@ -178,46 +178,9 @@ Lakukan penilaian berdasarkan hasil observasi langsung terhadap petugas.
 <div id="actionChecklist"></div>
 </div>
 <div class="box">
-  <h3 style="color:#0757b8;">Penilaian Manual</h3><di
-  <p style="font-size:12px;color:#66809a;">
-    Isi penilaian berdasarkan pengamatan langsung.
-  </p>
-
-  <label><b>Satisfaction</b></label>
-  <label><b>Satisfaction</b></label>
-<select id="manualSatisfaction">
-  <option value="0">Belum dilakukan — 0%</option>
-  <option value="50">Sebagian dilakukan — 50%</option>
-  <option value="100">Dilakukan — 100%</option>
-</select>
-
-<label>Catatan Satisfaction</label>
-<textarea id="noteSatisfaction" rows="3"
-  placeholder="Tuliskan hasil penilaian Satisfaction..."></textarea>
-
-
-<label><b>Checking</b></label>
-<select id="manualChecking">
-  <option value="0">Belum dilakukan — 0%</option>
-  <option value="50">Sebagian dilakukan — 50%</option>
-  <option value="100">Dilakukan — 100%</option>
-</select>
-
-<label>Catatan Checking</label>
-<textarea id="noteChecking" rows="3"
-  placeholder="Tuliskan hasil penilaian Checking..."></textarea>
-
-
-<label><b>Report & Follow Up</b></label>
-<select id="manualReport">
-  <option value="0">Belum dilakukan — 0%</option>
-  <option value="50">Sebagian dilakukan — 50%</option>
-  <option value="100">Dilakukan — 100%</option>
-</select>
-
-<label>Catatan Report & Follow Up</label>
-<textarea id="noteReport" rows="3"
-  placeholder="Tuliskan hasil penilaian Report & Follow Up..."></textarea>
+  <button class="primary" onclick="analyze()">
+    🤖 Analisis Hasil Observasi
+  </button>
 </div>
 </section>
 
